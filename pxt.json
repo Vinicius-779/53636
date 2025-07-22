@@ -1,0 +1,16 @@
+{
+    "name": "TCS34725MUX",
+    "description": "Controla o sensor TCS34725 com TCA9548A (multiplexador)",
+    "dependencies": {},
+    "files": [
+        "tcs34725mux.ts"
+    ],
+    "public": true,
+    "supportedTargets": [
+        "microbit"
+    ],
+    "targetVersions": {
+        "microbit": "1.5.0",
+        "codal-microbit": "1.5.0"
+    }
+}
