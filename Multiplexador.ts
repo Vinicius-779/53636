@@ -4,29 +4,32 @@ namespace Multiplexador {
     let enderecoMUX = 0x70
 
     /**
-     * Define o endereço I2C do MUX (opcional).
+     * Seleciona o canal do MUX (TCA9548A) para uma variável qualquer.
      */
-    //% block="Selecionar endereço do MUX %endereco"
-    //% endereco.min=112 endereco.max=119
-    export function selecionarEndereco(endereco: number) {
-        enderecoMUX = endereco
-    }
-
-    /**
-     * Seleciona um canal do MUX com uma variável no estilo encaixe.
-     */
-    //% block="Selecionar canal de %variavel na porta %canal"
-    //% canal.min=0 canal.max=7
+    //% block="Selecionar canal para variável %variavel na porta %canal"
     //% variavel.shadow=variables_get
-    export function selecionarCanalComVariavel(variavel: any, canal: number) {
+    //% canal.min=0 canal.max=7
+    export function selecionarCanal(variavel: any, canal: number): void {
         pins.i2cWriteNumber(enderecoMUX, 1 << canal, NumberFormat.UInt8BE)
     }
 
     /**
-     * Desativa todos os canais do MUX.
+     * Selecionar diretamente o canal sem variável.
      */
-    //% block="Desativar todos os canais do MUX"
-    export function desativarCanais() {
-        pins.i2cWriteNumber(enderecoMUX, 0x00, NumberFormat.UInt8BE)
+    //% block="Selecionar canal direto %canal"
+    //% canal.min=0 canal.max=7
+    export function selecionarCanalDireto(canal: number): void {
+        pins.i2cWriteNumber(enderecoMUX, 1 << canal, NumberFormat.UInt8BE)
     }
+
+    /**
+     * Selecionar e executar bloco dentro do canal
+     */
+    //% block="Usar canal %canal e executar %corpo"
+    //% canal.min=0 canal.max=7
+    export function comCanal(canal: number, corpo: () => void): void {
+        selecionarCanalDireto(canal)
+        corpo()
+    }
+
 }
