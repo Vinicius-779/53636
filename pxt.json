@@ -3,7 +3,7 @@
     "description": "Controla o sensor TCS34725 com TCA9548A (multiplexador)",
     "dependencies": {},
     "files": [
-        "tcs34725mux.ts"
+        "Multiplexador.ts"
     ],
     "public": true,
     "supportedTargets": [
