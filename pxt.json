@@ -1,10 +1,11 @@
 {
-  "name": "multiplexador",
-  "version": "1.0.0",
-  "description": "Blocos para controle do MUX TCA9548A com variáveis",
+  "name": "tca9548a-slot",
+  "description": "Controle do multiplexador TCA9548A com slot para variável.",
   "dependencies": {},
   "files": [
-    "multiplexador.ts"
+    "Multiplexador.ts",
   ],
-  "license": "MIT"
+  "targetVersions": {
+    "microbit": "1.6.25"
+  }
 }
