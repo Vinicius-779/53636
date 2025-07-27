@@ -1,51 +1,47 @@
+enum SensorTipo {
+    //% block="Sensor de Cor 1"
+    Cor1,
+    //% block="Sensor de Linha 1"
+    Linha1,
+    //% block="Sensor de Cor 2"
+    Cor2,
+    //% block="Sensor de Linha 2"
+    Linha2
+}
 
-//% weight=100 color=#00AEEF icon="" block="TCS34725MUX"
-namespace TCS34725MUX {
+namespace MultiplexadorTCA {
 
-    let i2cAddr = 0x29
+    let enderecoMUX = 0x70
 
-    function writeRegister(reg: number, value: number) {
-        pins.i2cWriteNumber(i2cAddr, (0x80 | reg) << 8 | value, NumberFormat.UInt16BE)
+    // Guarda associação sensor -> canal
+    let sensorCanalMap = new Map<SensorTipo, number>()
+
+    //% block="Associar sensor %sensor ao canal %canal"
+    //% canal.min=0 canal.max=7
+    export function associarSensorCanal(sensor: SensorTipo, canal: number): void {
+        sensorCanalMap.set(sensor, canal)
+        // opcional: selecionar canal fisicamente
+        pins.i2cWriteNumber(enderecoMUX, 1 << canal, NumberFormat.UInt8BE)
     }
 
-    function readRegister(reg: number): number {
-        pins.i2cWriteNumber(i2cAddr, 0x80 | reg, NumberFormat.UInt8BE)
-        return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt8BE)
+    //% block="Obter canal do sensor %sensor"
+    export function obterCanalSensor(sensor: SensorTipo): number {
+        const canal = sensorCanalMap.get(sensor)
+        if (canal === undefined) {
+            return -1
+        }
+        return canal
     }
 
-    function selectChannel(channel: number) {
-        pins.i2cWriteNumber(0x70, 1 << channel, NumberFormat.UInt8BE)
+    //% block="Selecionar canal do MUX %canal"
+    //% canal.min=0 canal.max=7
+    export function selecionarCanal(canal: number): void {
+        pins.i2cWriteNumber(enderecoMUX, 1 << canal, NumberFormat.UInt8BE)
     }
 
-    //% block="Selecionar canal do MUX %channel"
-    //% channel.min=0 channel.max=7
-    export function selecionarCanal(channel: number) {
-        selectChannel(channel)
-    }
-
-    //% block="Iniciar sensor TCS34725"
-    export function iniciarSensor() {
-        writeRegister(0x00, 0x03)
-        basic.pause(10)
-    }
-
-    //% block="Ler valor de cor vermelha"
-    export function lerVermelho(): number {
-        return readRegister(0x16) | (readRegister(0x17) << 8)
-    }
-
-    //% block="Ler valor de cor verde"
-    export function lerVerde(): number {
-        return readRegister(0x18) | (readRegister(0x19) << 8)
-    }
-
-    //% block="Ler valor de cor azul"
-    export function lerAzul(): number {
-        return readRegister(0x1A) | (readRegister(0x1B) << 8)
-    }
-
-    //% block="Ler valor de claro (clear)"
-    export function lerClaro(): number {
-        return readRegister(0x14) | (readRegister(0x15) << 8)
+    //% block="Definir endereço do MUX para %endereco"
+    //% endereco.min=112 endereco.max=119
+    export function definirEnderecoMUX(endereco: number) {
+        enderecoMUX = endereco
     }
 }
