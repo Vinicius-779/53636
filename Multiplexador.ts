@@ -1,35 +1,35 @@
-//% weight=100 color=#00AEEF icon="" block="Multiplexador"
-namespace Multiplexador {
-
-    let enderecoMUX = 0x70
+//% color=#AA00FF weight=100 icon="" block="TCA9548A"
+namespace TCA9548A {
 
     /**
-     * Seleciona o canal do MUX (TCA9548A) para uma variável qualquer.
+     * Bloco COM SELECIONAR: menu suspenso de 0 a 7
      */
-    //% block="Selecionar canal para variável %variavel na porta %canal"
-    //% variavel.shadow=variables_get
-    //% canal.min=0 canal.max=7
-    export function selecionarCanal(variavel: any, canal: number): void {
-        pins.i2cWriteNumber(enderecoMUX, 1 << canal, NumberFormat.UInt8BE)
+    //% block="Selecionar porta do TCA9548A %porta"
+    //% porta.defl=0
+    //% porta.min=0 porta.max=7
+    export function selecionarPortaDropdown(porta: number): void {
+        let valor = 1 << porta
+        pins.i2cWriteNumber(0x70, valor, NumberFormat.UInt8BE)
+        basic.pause(10)
     }
 
     /**
-     * Selecionar diretamente o canal sem variável.
+     * Bloco COM SLOT para variável ou número
      */
-    //% block="Selecionar canal direto %canal"
-    //% canal.min=0 canal.max=7
-    export function selecionarCanalDireto(canal: number): void {
-        pins.i2cWriteNumber(enderecoMUX, 1 << canal, NumberFormat.UInt8BE)
+    //% block="Selecionar porta do TCA9548A (variável) %porta"
+    //% porta.shadow="number"
+    export function selecionarPortaVariavel(porta: number): void {
+        let valor = 1 << porta
+        pins.i2cWriteNumber(0x70, valor, NumberFormat.UInt8BE)
+        basic.pause(10)
     }
 
     /**
-     * Selecionar e executar bloco dentro do canal
+     * Desativar todas as portas
      */
-    //% block="Usar canal %canal e executar %corpo"
-    //% canal.min=0 canal.max=7
-    export function comCanal(canal: number, corpo: () => void): void {
-        selecionarCanalDireto(canal)
-        corpo()
+    //% block="Desativar todas as portas do TCA9548A"
+    export function desativarTudo(): void {
+        pins.i2cWriteNumber(0x70, 0x00, NumberFormat.UInt8BE)
+        basic.pause(10)
     }
-
 }
