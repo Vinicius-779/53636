@@ -13,20 +13,20 @@ namespace Multiplexador {
     }
 
     /**
-     * Seleciona um canal do MUX usando uma variável e número da porta.
+     * Seleciona um canal do MUX com uma variável no estilo encaixe.
      */
-    //% block="Selecionar canal para [variável] %nome na porta %canal"
+    //% block="Selecionar canal de %variavel na porta %canal"
     //% canal.min=0 canal.max=7
-    //% nome.shadow=variables_get
-    export function selecionarCanal(nome: any, canal: number) {
+    //% variavel.shadow=variables_get
+    export function selecionarCanalComVariavel(variavel: any, canal: number) {
         pins.i2cWriteNumber(enderecoMUX, 1 << canal, NumberFormat.UInt8BE)
     }
 
     /**
-     * Desativar todos os canais.
+     * Desativa todos os canais do MUX.
      */
-    //% block="Selecionar nenhum canal"
-    export function desativarTodos() {
+    //% block="Desativar todos os canais do MUX"
+    export function desativarCanais() {
         pins.i2cWriteNumber(enderecoMUX, 0x00, NumberFormat.UInt8BE)
     }
 }
